@@ -1,13 +1,20 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { Link } from "@react-navigation/native";
+import { FlatList, StyleSheet, Text } from "react-native";
 import { COLORS } from "src/constants/colors";
 
-const polls = [1, 2, 3];
+const polls = [{ id: "1" }, { id: "2" }, { id: "3" }];
 
-const renderPoll = ({ item }: { item: number }) => {
+const renderPoll = ({ item }: { item: { id: string } }) => {
 	return (
-		<View style={styles.pollContainer}>
+		<Link
+			to={{
+				screen: "PollDetailScreen",
+				params: { pollId: item.id },
+			}}
+			style={styles.pollContainer}
+		>
 			<Text style={styles.pollTitle}>Example poll title</Text>
-		</View>
+		</Link>
 	);
 };
 
@@ -18,7 +25,7 @@ export default function HomeScreen() {
 			data={polls}
 			renderItem={renderPoll}
 			contentContainerStyle={styles.container}
-			keyExtractor={(item) => item.toString()}
+			keyExtractor={(item) => item.id}
 		/>
 	);
 }

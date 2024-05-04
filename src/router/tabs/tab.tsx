@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeTab from "./home/home-tab";
+import HomeTabScreens from "./home/screens/home-screen";
 import SettingsTab from "./settings/settings-tab";
 
 const Tab = createBottomTabNavigator();
@@ -11,7 +11,7 @@ export default function TabRoot() {
 				headerShown: false,
 			}}
 		>
-			<Tab.Screen name="HomeTab" component={HomeTab} />
+			<Tab.Screen name="HomeTab" component={HomeTabScreens} />
 			<Tab.Screen name="SettingsTab" component={SettingsTab} />
 		</Tab.Navigator>
 	);
