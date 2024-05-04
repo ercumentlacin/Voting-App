@@ -1,0 +1,52 @@
+{
+  "name": "eventy",
+  "version": "1.0.0",
+  "main": "src/App.tsx",
+  "scripts": {
+    "start": "expo start -c",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "storybook-generate": "sb-rn-get-stories",
+    "storybook": "EXPO_NO_DOTENV=1 STORYBOOK_ENABLED=true expo start -c"
+  },
+  "dependencies": {
+    "@react-navigation/native": "^6.1.17",
+    "@react-navigation/native-stack": "^6.9.26",
+    "@react-navigation/stack": "^6.3.29",
+    "@reduxjs/toolkit": "^2.2.3",
+    "expo": "~50.0.17",
+    "expo-constants": "~15.4.6",
+    "expo-status-bar": "~1.11.1",
+    "jest": "^29.3.1",
+    "jest-expo": "~50.0.4",
+    "react": "^18.3.1",
+    "react-native": "0.73.6",
+    "react-native-gesture-handler": "~2.14.0",
+    "react-native-safe-area-context": "4.8.2",
+    "react-native-screens": "~3.29.0",
+    "react-native-webview": "13.6.4",
+    "react-redux": "^9.1.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-community/datetimepicker": "^8.0.0",
+    "@react-native-community/slider": "^4.5.2",
+    "@storybook/addon-ondevice-actions": "^7.6.18",
+    "@storybook/addon-ondevice-controls": "^7.6.18",
+    "@storybook/react-native": "^7.6.18",
+    "@testing-library/react-native": "^12.4.5",
+    "@types/jest": "^29.5.12",
+    "@types/react": "~18.2.79",
+    "babel-loader": "^8.3.0",
+    "cross-env": "^7.0.3",
+    "eslint-plugin-testing-library": "^6.2.2",
+    "plop": "^4.0.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^5.4.5"
+  },
+  "private": true
+}
