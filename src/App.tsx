@@ -1,18 +1,15 @@
-import 'react-native-gesture-handler';
 import { registerRootComponent } from "expo";
-import { StyleSheet, SafeAreaView } from "react-native";
 import Constants from "expo-constants";
-import { Router } from "./router/router";
+import { SafeAreaView, StyleSheet } from "react-native";
+import "react-native-gesture-handler";
+import { COLORS } from "./constants/colors";
 import { Providers } from "./providers";
+import { Router } from "./router/router";
 
 function App() {
 	return (
 		<Providers>
-			<SafeAreaView
-				style={{
-					flex: 1,
-				}}
-			>
+			<SafeAreaView style={styles.container}>
 				<Router />
 			</SafeAreaView>
 		</Providers>
@@ -30,9 +27,7 @@ registerRootComponent(AppEntryPoint);
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
+		backgroundColor: COLORS.seasalt["900"],
 	},
 });
 
