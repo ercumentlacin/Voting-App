@@ -8,6 +8,7 @@ import type { StackScreenProps } from "@react-navigation/stack";
 export type RootStackParamList = {
   HomeScreen: NavigatorScreenParams<HomeTabParamList>;
   PollDetailScreen: { pollId: string };
+  PoolCreateScreen: undefined;
   NotFound: undefined;
 };
 
