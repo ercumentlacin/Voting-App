@@ -1,6 +1,10 @@
 import { Link } from "@react-navigation/native";
+import type { PostgrestError } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text } from "react-native";
 import { COLORS } from "src/constants/colors";
+import { supabase } from "src/lib/supabase";
+import type { Database } from "src/types/supabase";
 
 const polls = [{ id: "1" }, { id: "2" }, { id: "3" }];
 
@@ -19,6 +23,27 @@ const renderPoll = ({ item }: { item: { id: string } }) => {
 };
 
 export default function HomeScreen() {
+	const [polls, setPolls] = useState<
+		Database["public"]["Tables"]["polls"]["Row"][]
+	>([]);
+	const [isPending, setIsPending] = useState(true);
+	const [error, setError] = useState<PostgrestError | null>(null);
+
+	useEffect(() => {
+		async function fetchPolls() {
+			setIsPending(true);
+			const { data: polls, error } = await supabase.from("polls").select("*");
+			console.log("🚀 ~ fetchPolls ~ polls, error:", polls, error);
+			if (error) {
+				setError(error);
+			} else {
+				setPolls(polls);
+			}
+			setIsPending(false);
+		}
+		fetchPolls();
+	}, []);
+
 	return (
 		<FlatList
 			style={styles.root}
