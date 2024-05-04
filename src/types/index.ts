@@ -4,11 +4,14 @@ import type {
   NavigatorScreenParams,
 } from "@react-navigation/native";
 import type { StackScreenProps } from "@react-navigation/stack";
+import type { Row } from "./supabase";
 
 export type RootStackParamList = {
   HomeScreen: NavigatorScreenParams<HomeTabParamList>;
-  PollDetailScreen: { pollId: string };
+  PollDetailScreen: { pollId: string; poll?: Row<"polls"> };
   PoolCreateScreen: undefined;
+  LoginScreen: undefined;
+  ProfileScreen: undefined;
   NotFound: undefined;
 };
 

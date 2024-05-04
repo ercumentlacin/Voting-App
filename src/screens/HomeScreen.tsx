@@ -4,28 +4,26 @@ import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text } from "react-native";
 import { COLORS } from "src/constants/colors";
 import { supabase } from "src/lib/supabase";
-import type { Database } from "src/types/supabase";
+import type { Row } from "src/types/supabase";
 
-const polls = [{ id: "1" }, { id: "2" }, { id: "3" }];
+type Poll = Row<"polls">;
 
-const renderPoll = ({ item }: { item: { id: string } }) => {
+const renderPoll = ({ item }: { item: Poll }) => {
 	return (
 		<Link
 			to={{
 				screen: "PollDetailScreen",
-				params: { pollId: item.id },
+				params: { pollId: item.id.toString(), poll: item },
 			}}
 			style={styles.pollContainer}
 		>
-			<Text style={styles.pollTitle}>Example poll title</Text>
+			<Text style={styles.pollTitle}>{item.question}</Text>
 		</Link>
 	);
 };
 
 export default function HomeScreen() {
-	const [polls, setPolls] = useState<
-		Database["public"]["Tables"]["polls"]["Row"][]
-	>([]);
+	const [polls, setPolls] = useState<Poll[]>([]);
 	const [isPending, setIsPending] = useState(true);
 	const [error, setError] = useState<PostgrestError | null>(null);
 
@@ -33,7 +31,6 @@ export default function HomeScreen() {
 		async function fetchPolls() {
 			setIsPending(true);
 			const { data: polls, error } = await supabase.from("polls").select("*");
-			console.log("🚀 ~ fetchPolls ~ polls, error:", polls, error);
 			if (error) {
 				setError(error);
 			} else {
@@ -50,7 +47,7 @@ export default function HomeScreen() {
 			data={polls}
 			renderItem={renderPoll}
 			contentContainerStyle={styles.container}
-			keyExtractor={(item) => item.id}
+			keyExtractor={(item) => item.id.toString()}
 		/>
 	);
 }
