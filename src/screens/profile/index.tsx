@@ -1,5 +1,6 @@
-import { useNavigation } from "@react-navigation/native";
+import { useEffect } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "src/lib/react-navigation";
 import { supabase } from "src/lib/supabase";
 import { useAuth } from "src/providers/auth-provider";
 
@@ -7,9 +8,11 @@ export default function ProfileScreen() {
 	const session = useAuth();
 	const navigation = useNavigation();
 
-	if (!session) {
-		return navigation.navigate("LoginScreen");
-	}
+	useEffect(() => {
+		if (!session) {
+			return navigation.navigate("HomeScreen");
+		}
+	}, [session, navigation]);
 
 	return (
 		<View style={styles.container}>
@@ -17,7 +20,13 @@ export default function ProfileScreen() {
 				{session?.user ? `Signed in as ${session.user.email}` : "Not signed in"}
 			</Text>
 
-			<Button title="Sign out" onPress={() => supabase.auth.signOut()} />
+			<Button
+				title="Sign out"
+				onPress={() => {
+					supabase.auth.signOut();
+					navigation.navigate("HomeScreen");
+				}}
+			/>
 		</View>
 	);
 }

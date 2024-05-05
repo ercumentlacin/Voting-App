@@ -1,8 +1,9 @@
 import { Feather } from "@expo/vector-icons";
-import { Link, useNavigation, useRoute } from "@react-navigation/native";
+import { Link, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
 import { Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { COLORS } from "src/constants/colors";
+import { useNavigation } from "src/lib/react-navigation";
 import type { RootStackScreenProps } from "src/types";
 
 const poll = {

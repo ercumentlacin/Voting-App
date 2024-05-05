@@ -1,13 +1,20 @@
-import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import type {
+  BottomTabNavigationProp,
+  BottomTabScreenProps,
+} from "@react-navigation/bottom-tabs";
+import type {
+  CompositeNavigationProp,
   CompositeScreenProps,
-  NavigatorScreenParams,
+  RouteProp,
 } from "@react-navigation/native";
-import type { StackScreenProps } from "@react-navigation/stack";
+import type {
+  StackNavigationProp,
+  StackScreenProps,
+} from "@react-navigation/stack";
 import type { Row } from "./supabase";
 
 export type RootStackParamList = {
-  HomeScreen: NavigatorScreenParams<HomeTabParamList>;
+  HomeScreen: undefined;
   PollDetailScreen: { pollId: string; poll?: Row<"polls"> };
   PoolCreateScreen: undefined;
   LoginScreen: undefined;
@@ -29,8 +36,17 @@ export type HomeTabScreenProps<T extends keyof HomeTabParamList> =
     RootStackScreenProps<keyof RootStackParamList>
   >;
 
-declare global {
-  namespace ReactNavigation {
-    interface RootParamList extends RootStackParamList {}
-  }
-}
+export type GenericScreenNavigationProp<T extends keyof HomeTabParamList> =
+  CompositeNavigationProp<
+    BottomTabNavigationProp<HomeTabParamList, T>,
+    StackNavigationProp<RootStackParamList>
+  >;
+
+export type GenericScreenRouteProp<T extends keyof RootStackParamList> =
+  RouteProp<RootStackParamList, T>;
+
+// declare global {
+//   namespace ReactNavigation {
+//     interface RootParamList extends RootStackParamList {}
+//   }
+// }
