@@ -1,29 +1,39 @@
 import { Feather } from "@expo/vector-icons";
 import { Link, useRoute } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { Button, Pressable, StyleSheet, Text, View } from "react-native";
+import { Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { COLORS } from "src/constants/colors";
-import { useNavigation } from "src/lib/react-navigation";
+import { supabase } from "src/lib/supabase";
 import type { RootStackScreenProps } from "src/types";
-
-const poll = {
-	question: "React vs Vue",
-	options: ["React", "Vue"],
-};
 
 export default function PollDetailScreen() {
 	const {
-		params: { pollId },
+		params: { pollId, poll: initialPoll },
 	} = useRoute<RootStackScreenProps<"PollDetailScreen">["route"]>();
-	const navigation = useNavigation();
+
+	const [poll, setPoll] = useState(initialPoll);
 
 	useEffect(() => {
-		navigation.setOptions({
-			headerTitle: poll.question,
-		});
-	}, [navigation]);
+		async function fetchPoll(id: number) {
+			const { data: poll, error } = await supabase
+				.from("polls")
+				.select("*")
+				.eq("id", id)
+				.single();
+
+			if (error) return Alert.alert("Error", error.message);
+
+			if (poll) setPoll(poll);
+		}
+
+		fetchPoll(Number(pollId));
+	}, [pollId]);
 
 	const [selectedOption, setSelectedOption] = useState<string | null>(null);
+
+	if (!poll) {
+		return <Text>Poll not found</Text>;
+	}
 
 	return (
 		<View style={styles.container}>
@@ -56,9 +66,7 @@ export default function PollDetailScreen() {
 					params: { pollId: String(Number(pollId) + 1) },
 				}}
 				style={styles.nextButton}
-			>
-				<Text style={styles.nextButtonText}>Next</Text>
-			</Link>
+			></Link>
 		</View>
 	);
 }
@@ -84,20 +92,5 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		gap: 10,
-	},
-	option: {
-		// fontSize: 18,
-	},
-	nextButton: {
-		position: "absolute",
-		bottom: 16,
-		right: 16,
-		backgroundColor: "blue",
-		padding: 16,
-		borderRadius: 8,
-	},
-	nextButtonText: {
-		color: "white",
-		fontSize: 18,
 	},
 });

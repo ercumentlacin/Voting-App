@@ -56,7 +56,7 @@ export default function HomeTabScreens() {
 			<Stack.Screen
 				name="PollDetailScreen"
 				options={{
-					headerTitle: "PollDetailScreen",
+					headerTitle: "Poll",
 				}}
 				component={PollDetailScreen}
 			/>
