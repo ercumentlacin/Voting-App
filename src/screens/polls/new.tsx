@@ -8,7 +8,7 @@ import { useAuth } from "src/providers/auth-provider";
 
 export default function PoolCreateScreen() {
 	const [title, setTitle] = useState("");
-	const [options, setOptions] = useState<string[]>(["a", "b"]);
+	const [options, setOptions] = useState<string[]>(["", ""]);
 	const [error, setError] = useState<string | null>(null);
 
 	const navigation = useNavigation();
@@ -59,6 +59,7 @@ export default function PoolCreateScreen() {
 			.single();
 
 		if (error) {
+			console.log("🚀 ~ createNewPoll ~ error:", error);
 			return Alert.alert("Error creating poll", error.message);
 		}
 

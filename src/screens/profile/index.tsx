@@ -9,7 +9,7 @@ export default function ProfileScreen() {
 	const navigation = useNavigation();
 
 	useEffect(() => {
-		if (!session) {
+		if (session?.user.is_anonymous) {
 			return navigation.navigate("HomeScreen");
 		}
 	}, [session, navigation]);

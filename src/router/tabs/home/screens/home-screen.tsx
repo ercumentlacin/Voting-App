@@ -29,14 +29,15 @@ export default function HomeTabScreens() {
 				options={{
 					headerTitle: "Polls",
 					headerShown: true,
-					headerRight: () => (
-						<AntDesign
-							name="plus"
-							size={24}
-							color="black"
-							onPress={() => navigation.navigate("PoolCreateScreen")}
-						/>
-					),
+					headerRight: () =>
+						!session?.user.is_anonymous ? (
+							<AntDesign
+								name="plus"
+								size={24}
+								color="black"
+								onPress={() => navigation.navigate("PoolCreateScreen")}
+							/>
+						) : null,
 					headerLeft: () => (
 						<AntDesign
 							name={session?.user ? "user" : "login"}
@@ -44,7 +45,7 @@ export default function HomeTabScreens() {
 							color="black"
 							onPress={() =>
 								navigation.navigate(
-									session?.user ? "ProfileScreen" : "LoginScreen",
+									!session?.user.is_anonymous ? "ProfileScreen" : "LoginScreen",
 								)
 							}
 						/>
