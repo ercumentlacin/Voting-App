@@ -4,9 +4,7 @@ import { useEffect, useState } from "react";
 import { FlatList, StyleSheet, Text } from "react-native";
 import { COLORS } from "src/constants/colors";
 import { supabase } from "src/lib/supabase";
-import type { Row } from "src/types/supabase";
-
-type Poll = Row<"polls">;
+import type { Poll } from "src/types";
 
 const renderPoll = ({ item }: { item: Poll }) => {
 	return (

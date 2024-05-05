@@ -11,7 +11,13 @@ import type {
   StackNavigationProp,
   StackScreenProps,
 } from "@react-navigation/stack";
-import type { Row } from "./supabase";
+import type { Database } from "./supabase";
+
+export type Row<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Row"];
+
+export type Poll = Row<"polls">;
+export type Vote = Row<"votes">;
 
 export type RootStackParamList = {
   HomeScreen: undefined;

@@ -9,6 +9,7 @@ import {
 	View,
 } from "react-native";
 import { COLORS } from "src/constants/colors";
+import { useNavigation } from "src/lib/react-navigation";
 import { supabase } from "src/lib/supabase";
 
 // Tells Supabase Auth to continuously refresh the session automatically if
@@ -27,6 +28,7 @@ export default function LoginScreen() {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	const [loading, setLoading] = useState(false);
+	const navigation = useNavigation();
 
 	async function signInWithEmail() {
 		setLoading(true);
@@ -83,14 +85,18 @@ export default function LoginScreen() {
 				<Button
 					title="Sign in"
 					disabled={loading}
-					onPress={() => signInWithEmail()}
+					onPress={() =>
+						signInWithEmail().then(() => navigation.navigate("HomeScreen"))
+					}
 				/>
 			</View>
 			<View style={styles.verticallySpaced}>
 				<Button
 					title="Sign up"
 					disabled={loading}
-					onPress={() => signUpWithEmail()}
+					onPress={() =>
+						signUpWithEmail().then(() => navigation.navigate("HomeScreen"))
+					}
 				/>
 			</View>
 		</View>
