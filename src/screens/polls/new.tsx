@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { COLORS } from "src/constants/colors";
 import { useNavigation } from "src/lib/react-navigation";
-import { supabase } from "src/lib/supabase";
 import { useAuth } from "src/providers/auth-provider";
+import { useCreatePollMutation } from "src/redux/api/supabase-api";
 
 export default function PoolCreateScreen() {
 	const [title, setTitle] = useState("");
@@ -46,24 +46,22 @@ export default function PoolCreateScreen() {
 		if (isOptionsLessThanTwo)
 			return setError("At least two options are required");
 	};
+
+	const [createPoll, { isLoading: createPollLoading, error: createPollError }] =
+		useCreatePollMutation();
+
 	const createNewPoll = async () => {
 		validatePollForm();
 
-		const { data, error } = await supabase
-			.from("polls")
-			.insert({
-				options,
-				question: title,
-			})
-			.select()
-			.single();
-
-		if (error) {
-			console.log("🚀 ~ createNewPoll ~ error:", error);
-			return Alert.alert("Error creating poll", error.message);
-		}
-
-		navigation.goBack();
+		await createPoll({
+			options,
+			question: title,
+		})
+			.then(() => navigation.goBack())
+			.catch((error) => {
+				console.log("🚀 ~ createNewPoll ~ error:", error);
+				return Alert.alert("Error creating poll", error.message);
+			});
 	};
 
 	return (
@@ -100,7 +98,11 @@ export default function PoolCreateScreen() {
 				onPress={() => setOptions((p) => p.concat(""))}
 			/>
 
-			<Button title="Create Poll" onPress={createNewPoll} />
+			<Button
+				disabled={createPollLoading}
+				title={createPollLoading ? "Creating..." : "Create Poll"}
+				onPress={createNewPoll}
+			/>
 			{error && <Text style={styles.errorText}>{error}</Text>}
 		</View>
 	);

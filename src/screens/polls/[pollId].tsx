@@ -4,8 +4,12 @@ import React, { useEffect, useState } from "react";
 import { Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { COLORS } from "src/constants/colors";
 import { useNavigation } from "src/lib/react-navigation";
-import { supabase } from "src/lib/supabase";
 import { useAuth } from "src/providers/auth-provider";
+import {
+	useGetPollByIdQuery,
+	useGetVoteByIdQuery,
+	useUpsertVoteMutation,
+} from "src/redux/api/supabase-api";
 import type { RootStackScreenProps, Vote } from "src/types";
 
 export default function PollDetailScreen() {
@@ -15,47 +19,38 @@ export default function PollDetailScreen() {
 	const navigation = useNavigation();
 	const session = useAuth();
 
-	const [poll, setPoll] = useState(initialPoll);
 	const [selectedOption, setSelectedOption] = useState<string | null>(null);
 	const [userVote, setUserVote] = useState<Vote | null>(null);
 
 	const userId = session?.user.id;
 
+	const {
+		data: pollData,
+		error: pollError,
+		isLoading: pollLoading,
+		isFetching: pollFetching,
+		refetch: refetchPoll,
+	} = useGetPollByIdQuery(Number(pollId));
+
+	const poll = pollData || initialPoll;
+
+	const {
+		data: voteData,
+		error: voteError,
+		isLoading: voteLoading,
+		isFetching: voteFetching,
+		refetch: refetchVote,
+	} = useGetVoteByIdQuery({ pollId: Number(pollId), userId: userId });
+
 	useEffect(() => {
-		async function fetchPoll(id: number) {
-			const { data: poll, error } = await supabase
-				.from("polls")
-				.select("*")
-				.eq("id", id)
-				.single();
-
-			if (error) return Alert.alert("Fetch Poll Error", error.message);
-
-			if (poll) setPoll(poll);
+		if (voteData) {
+			setSelectedOption(voteData.option);
+			setUserVote(voteData);
 		}
+	}, [voteData]);
 
-		fetchPoll(Number(pollId));
-	}, [pollId]);
-
-	useEffect(() => {
-		async function fetchUserVote(pollId: number, userId?: string) {
-			if (!userId) return;
-			const { data: vote } = await supabase
-				.from("votes")
-				.select("*")
-				.eq("poll_id", pollId)
-				.eq("user_id", userId)
-				.limit(1)
-				.single();
-
-			if (vote) {
-				setSelectedOption(vote.option);
-				setUserVote(vote);
-			}
-		}
-
-		fetchUserVote(Number(pollId), userId);
-	}, [pollId, userId]);
+	const [createOrUpdateVoteMutation, { isLoading: voteMutationLoading }] =
+		useUpsertVoteMutation();
 
 	if (!poll) {
 		return <Text>Poll not found</Text>;
@@ -67,23 +62,19 @@ export default function PollDetailScreen() {
 
 		if (!session?.user) return Alert.alert("Error", "Please sign in to vote");
 
-		const { data, error } = await supabase
-			.from("votes")
-			.upsert({
-				id: userVote?.id || undefined,
-				option: selectedOption,
-				poll_id: poll.id,
-				user_id: session?.user?.id,
+		await createOrUpdateVoteMutation({
+			option: selectedOption,
+			poll_id: poll.id,
+			user_id: session?.user?.id,
+			id: userVote?.id,
+		})
+			.then(() => {
+				Alert.alert("Success", "Vote submitted successfully");
+				navigation.navigate("HomeScreen");
 			})
-			.select()
-			.single();
-
-		if (error) return Alert.alert("Error", error.message);
-
-		if (data) {
-			Alert.alert("Success", "Vote submitted successfully");
-			navigation.navigate("HomeScreen");
-		}
+			.catch((error) => {
+				Alert.alert("Error", error.message);
+			});
 	};
 
 	return (
@@ -108,7 +99,11 @@ export default function PollDetailScreen() {
 			</View>
 
 			<View>
-				<Button title="Vote" onPress={handleVote} />
+				<Button
+					title={!voteMutationLoading ? "Vote" : "Voting..."}
+					onPress={handleVote}
+					disabled={voteMutationLoading}
+				/>
 			</View>
 		</View>
 	);

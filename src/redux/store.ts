@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { eventsApi } from "./api/events";
+import { supabaseApi } from "./api/supabase-api";
 
 export const store = configureStore({
   reducer: {
-    [eventsApi.reducerPath]: eventsApi.reducer
+    [supabaseApi.reducerPath]: supabaseApi.reducer,
   },
 
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(eventsApi.middleware)
+    getDefaultMiddleware().concat(supabaseApi.middleware),
 });

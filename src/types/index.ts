@@ -16,8 +16,14 @@ import type { Database } from "./supabase";
 export type Row<T extends keyof Database["public"]["Tables"]> =
   Database["public"]["Tables"][T]["Row"];
 
+export type Insert<T extends keyof Database["public"]["Tables"]> =
+  Database["public"]["Tables"][T]["Insert"];
+
 export type Poll = Row<"polls">;
+export type InsertPoll = Insert<"polls">;
+
 export type Vote = Row<"votes">;
+export type InsertVote = Insert<"votes">;
 
 export type RootStackParamList = {
   HomeScreen: undefined;

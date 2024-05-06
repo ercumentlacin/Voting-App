@@ -1,9 +1,7 @@
 import { Link } from "@react-navigation/native";
-import type { PostgrestError } from "@supabase/supabase-js";
-import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text } from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, Text } from "react-native";
 import { COLORS } from "src/constants/colors";
-import { supabase } from "src/lib/supabase";
+import { useGetPollsQuery } from "src/redux/api/supabase-api";
 import type { Poll } from "src/types";
 
 const renderPoll = ({ item }: { item: Poll }) => {
@@ -21,23 +19,11 @@ const renderPoll = ({ item }: { item: Poll }) => {
 };
 
 export default function HomeScreen() {
-	const [polls, setPolls] = useState<Poll[]>([]);
-	const [isPending, setIsPending] = useState(true);
-	const [error, setError] = useState<PostgrestError | null>(null);
+	const { data: polls, isLoading } = useGetPollsQuery();
 
-	useEffect(() => {
-		async function fetchPolls() {
-			setIsPending(true);
-			const { data: polls, error } = await supabase.from("polls").select("*");
-			if (error) {
-				setError(error);
-			} else {
-				setPolls(polls);
-			}
-			setIsPending(false);
-		}
-		fetchPolls();
-	}, []);
+	if (isLoading) {
+		return <ActivityIndicator size="large" color={COLORS.seasalt.DEFAULT} />;
+	}
 
 	return (
 		<FlatList
