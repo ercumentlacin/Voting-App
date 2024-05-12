@@ -4,6 +4,7 @@ import { Alert, Button, StyleSheet, Text, TextInput, View } from "react-native";
 import { COLORS } from "src/constants/colors";
 import { useNavigation } from "src/lib/react-navigation";
 import { useAuth } from "src/providers/auth-provider";
+import SafeAreaViewProvider from "src/providers/safe-area-view-provider";
 import { useCreatePollMutation } from "src/redux/api/supabase-api";
 
 export default function PoolCreateScreen() {
@@ -65,46 +66,45 @@ export default function PoolCreateScreen() {
 	};
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.label}>Title</Text>
-			<TextInput
-				style={styles.input}
-				placeholder="Type your poll title"
-				value={title}
-				onChangeText={setTitle}
-			/>
-
-			<Text style={styles.label}>Options</Text>
-			{options.map((option, index) => (
-				<View key={index} style={styles.optionsContainer}>
-					<TextInput
-						style={styles.input}
-						placeholder={`Option ${index + 1}`}
-						value={option}
-						onChangeText={(text) => updateOptionText(text, index)}
-					/>
-					<Feather
-						name="x"
-						size={18}
-						color={COLORS.slate_gray.DEFAULT}
-						onPress={() => removeOption(index)}
-						style={styles.iconX}
-					/>
-				</View>
-			))}
-
-			<Button
-				title="Add Option"
-				onPress={() => setOptions((p) => p.concat(""))}
-			/>
-
-			<Button
-				disabled={createPollLoading}
-				title={createPollLoading ? "Creating..." : "Create Poll"}
-				onPress={createNewPoll}
-			/>
-			{error && <Text style={styles.errorText}>{error}</Text>}
-		</View>
+		<SafeAreaViewProvider>
+			<View style={styles.container}>
+				<Text style={styles.label}>Title</Text>
+				<TextInput
+					style={styles.input}
+					placeholder="Type your poll title"
+					value={title}
+					onChangeText={setTitle}
+				/>
+				<Text style={styles.label}>Options</Text>
+				{options.map((option, index) => (
+					<View key={index} style={styles.optionsContainer}>
+						<TextInput
+							style={styles.input}
+							placeholder={`Option ${index + 1}`}
+							value={option}
+							onChangeText={(text) => updateOptionText(text, index)}
+						/>
+						<Feather
+							name="x"
+							size={18}
+							color={COLORS.slate_gray.DEFAULT}
+							onPress={() => removeOption(index)}
+							style={styles.iconX}
+						/>
+					</View>
+				))}
+				<Button
+					title="Add Option"
+					onPress={() => setOptions((p) => p.concat(""))}
+				/>
+				<Button
+					disabled={createPollLoading}
+					title={createPollLoading ? "Creating..." : "Create Poll"}
+					onPress={createNewPoll}
+				/>
+				{error && <Text style={styles.errorText}>{error}</Text>}
+			</View>
+		</SafeAreaViewProvider>
 	);
 }
 

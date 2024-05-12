@@ -3,6 +3,7 @@ import { Button, StyleSheet, Text, View } from "react-native";
 import { useNavigation } from "src/lib/react-navigation";
 import { supabase } from "src/lib/supabase";
 import { useAuth } from "src/providers/auth-provider";
+import SafeAreaViewProvider from "src/providers/safe-area-view-provider";
 
 export default function ProfileScreen() {
 	const session = useAuth();
@@ -10,24 +11,30 @@ export default function ProfileScreen() {
 
 	useEffect(() => {
 		if (session?.user.is_anonymous) {
-			return navigation.navigate("HomeScreen");
+			return navigation.replace("HomeScreen");
+		}
+		if (!session) {
+			return navigation.replace("LoginScreen");
 		}
 	}, [session, navigation]);
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>
-				{session?.user ? `Signed in as ${session.user.email}` : "Not signed in"}
-			</Text>
-
-			<Button
-				title="Sign out"
-				onPress={() => {
-					supabase.auth.signOut();
-					navigation.navigate("HomeScreen");
-				}}
-			/>
-		</View>
+		<SafeAreaViewProvider>
+			<View style={styles.container}>
+				<Text style={styles.title}>
+					{session?.user
+						? `Signed in as ${session.user.email}`
+						: "Not signed in"}
+				</Text>
+				<Button
+					title="Sign out"
+					onPress={() => {
+						supabase.auth.signOut();
+						navigation.navigate("HomeScreen");
+					}}
+				/>
+			</View>
+		</SafeAreaViewProvider>
 	);
 }
 

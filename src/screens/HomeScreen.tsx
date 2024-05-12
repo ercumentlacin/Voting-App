@@ -1,6 +1,7 @@
 import { Link } from "@react-navigation/native";
 import { ActivityIndicator, FlatList, StyleSheet, Text } from "react-native";
 import { COLORS } from "src/constants/colors";
+import SafeAreaViewProvider from "src/providers/safe-area-view-provider";
 import { useGetPollsQuery } from "src/redux/api/supabase-api";
 import type { Poll } from "src/types";
 
@@ -22,17 +23,23 @@ export default function HomeScreen() {
 	const { data: polls, isLoading } = useGetPollsQuery();
 
 	if (isLoading) {
-		return <ActivityIndicator size="large" color={COLORS.seasalt.DEFAULT} />;
+		return (
+			<SafeAreaViewProvider>
+				<ActivityIndicator size="large" color={COLORS.seasalt.DEFAULT} />
+			</SafeAreaViewProvider>
+		);
 	}
 
 	return (
-		<FlatList
-			style={styles.root}
-			data={polls}
-			renderItem={renderPoll}
-			contentContainerStyle={styles.container}
-			keyExtractor={(item) => item.id.toString()}
-		/>
+		<SafeAreaViewProvider>
+			<FlatList
+				style={styles.root}
+				data={polls}
+				renderItem={renderPoll}
+				contentContainerStyle={styles.container}
+				keyExtractor={(item) => item.id.toString()}
+			/>
+		</SafeAreaViewProvider>
 	);
 }
 

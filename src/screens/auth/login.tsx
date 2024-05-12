@@ -11,6 +11,7 @@ import {
 import { COLORS } from "src/constants/colors";
 import { useNavigation } from "src/lib/react-navigation";
 import { supabase } from "src/lib/supabase";
+import SafeAreaViewProvider from "src/providers/safe-area-view-provider";
 
 // Tells Supabase Auth to continuously refresh the session automatically if
 // the app is in the foreground. When this is added, you will continue to receive
@@ -58,48 +59,50 @@ export default function LoginScreen() {
 	}
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.title}>Sign in or Create an account</Text>
-			<View style={styles.verticallySpaced}>
-				<Text style={styles.label}>Email</Text>
-				<TextInput
-					style={styles.input}
-					onChangeText={(text) => setEmail(text)}
-					value={email}
-					placeholder="email@address.com"
-					autoCapitalize={"none"}
-				/>
+		<SafeAreaViewProvider>
+			<View style={styles.container}>
+				<Text style={styles.title}>Sign in or Create an account</Text>
+				<View style={styles.verticallySpaced}>
+					<Text style={styles.label}>Email</Text>
+					<TextInput
+						style={styles.input}
+						onChangeText={(text) => setEmail(text)}
+						value={email}
+						placeholder="email@address.com"
+						autoCapitalize={"none"}
+					/>
+				</View>
+				<View style={styles.verticallySpaced}>
+					<Text style={styles.label}>Password</Text>
+					<TextInput
+						style={styles.input}
+						onChangeText={(text) => setPassword(text)}
+						value={password}
+						secureTextEntry={true}
+						placeholder="Password"
+						autoCapitalize={"none"}
+					/>
+				</View>
+				<View style={[styles.verticallySpaced, styles.mt20]}>
+					<Button
+						title="Sign in"
+						disabled={loading}
+						onPress={() =>
+							signInWithEmail().then(() => navigation.navigate("HomeScreen"))
+						}
+					/>
+				</View>
+				<View style={styles.verticallySpaced}>
+					<Button
+						title="Sign up"
+						disabled={loading}
+						onPress={() =>
+							signUpWithEmail().then(() => navigation.navigate("HomeScreen"))
+						}
+					/>
+				</View>
 			</View>
-			<View style={styles.verticallySpaced}>
-				<Text style={styles.label}>Password</Text>
-				<TextInput
-					style={styles.input}
-					onChangeText={(text) => setPassword(text)}
-					value={password}
-					secureTextEntry={true}
-					placeholder="Password"
-					autoCapitalize={"none"}
-				/>
-			</View>
-			<View style={[styles.verticallySpaced, styles.mt20]}>
-				<Button
-					title="Sign in"
-					disabled={loading}
-					onPress={() =>
-						signInWithEmail().then(() => navigation.navigate("HomeScreen"))
-					}
-				/>
-			</View>
-			<View style={styles.verticallySpaced}>
-				<Button
-					title="Sign up"
-					disabled={loading}
-					onPress={() =>
-						signUpWithEmail().then(() => navigation.navigate("HomeScreen"))
-					}
-				/>
-			</View>
-		</View>
+		</SafeAreaViewProvider>
 	);
 }
 

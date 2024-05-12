@@ -5,6 +5,7 @@ import { Alert, Button, Pressable, StyleSheet, Text, View } from "react-native";
 import { COLORS } from "src/constants/colors";
 import { useNavigation } from "src/lib/react-navigation";
 import { useAuth } from "src/providers/auth-provider";
+import SafeAreaViewProvider from "src/providers/safe-area-view-provider";
 import {
 	useGetPollByIdQuery,
 	useGetVoteByIdQuery,
@@ -78,34 +79,34 @@ export default function PollDetailScreen() {
 	};
 
 	return (
-		<View style={styles.container}>
-			<Text style={styles.question}>{poll.question}</Text>
-
-			<View style={styles.optionList}>
-				{poll.options.map((option) => (
-					<Pressable
-						key={option}
-						style={styles.optionContainer}
-						onPress={() => setSelectedOption(option)}
-					>
-						<Feather
-							name={selectedOption === option ? "check-circle" : "circle"}
-							size={18}
-							color={selectedOption === option ? "green" : "black"}
-						/>
-						<Text>{option}</Text>
-					</Pressable>
-				))}
+		<SafeAreaViewProvider>
+			<View style={styles.container}>
+				<Text style={styles.question}>{poll.question}</Text>
+				<View style={styles.optionList}>
+					{poll.options.map((option) => (
+						<Pressable
+							key={option}
+							style={styles.optionContainer}
+							onPress={() => setSelectedOption(option)}
+						>
+							<Feather
+								name={selectedOption === option ? "check-circle" : "circle"}
+								size={18}
+								color={selectedOption === option ? "green" : "black"}
+							/>
+							<Text>{option}</Text>
+						</Pressable>
+					))}
+				</View>
+				<View>
+					<Button
+						title={!voteMutationLoading ? "Vote" : "Voting..."}
+						onPress={handleVote}
+						disabled={voteMutationLoading}
+					/>
+				</View>
 			</View>
-
-			<View>
-				<Button
-					title={!voteMutationLoading ? "Vote" : "Voting..."}
-					onPress={handleVote}
-					disabled={voteMutationLoading}
-				/>
-			</View>
-		</View>
+		</SafeAreaViewProvider>
 	);
 }
 
